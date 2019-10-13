@@ -32,6 +32,8 @@ namespace WpfApp2
             public string name { set; get; }
             public string path { set; get; }
         }
+
+        //Truy cập CSDL - lấy tên file/folder
         class FileOrFolderDAO
         {
             /// <summary>
@@ -150,11 +152,108 @@ namespace WpfApp2
                 }
                 return output;
             }
+
+            /// <summary>
+            /// Chép tên file từ source sang preview, cho nó có dữ liệu để thao tác
+            /// </summary>
+            /// <param name="sourc">file/folder Data</param>
+            /// <param name="dest">file/folder preview</param>
+            public ObservableCollection<string> cloneToPreview(ObservableCollection<FileOrFolder> source)
+            {
+                ObservableCollection<string> output = new ObservableCollection<string>();
+                foreach (var item in source)
+                   output.Add(item.name);
+                return output;
+            }
+           
         }
+
+        class FileOrFolderBus // Lu ý: class này chỉ thao tác với con preview (cái cột file name) kiểu string
+        {
+            /// <summary>
+            /// Viết hoa từng kí từng đầu của mỗi chữ cách nhau bởi khoảng trắng
+            /// </summary>
+            /// <param name="inputName">tên cần viết hoa</param>
+            public static void UpperFirstLetter(ref string inputName)
+            {
+                string dummyString = inputName;
+                StringBuilder newName = new StringBuilder(dummyString);             
+
+                for (int i = 1; i < dummyString.Length; i++)
+                    if (dummyString[i] != ' ' && dummyString[i - 1] == ' ')
+                        newName[i] = char.ToUpper(newName[i]);                 
+                    else                   
+                        newName[i] = char.ToLower(newName[i]);
+
+                inputName = newName.ToString();
+            }
+
+            /// <summary>
+            /// Viết hoa tất cả kí tự hoặc viết thường tất cả kí tự
+            /// </summary>
+            /// <param name="inputName">cái tên cần chỉnh</param>
+            /// <param name="mode">mode = 1 : viết hoa, mode = 2 : viết thường</param>
+            public static void NewCase(ref string inputName, int mode)
+            {
+                if (mode == 1)
+                    inputName = inputName.ToUpper();
+                else if (mode == 2)
+                    inputName = inputName.ToUpper();
+            }
+
+            /// <summary>
+            /// Áp dụng các tùy chỉnh của người dùng lên tên file/folder
+            /// </summary>
+            /// <param name="currentFileOrFolder">đối tưởng file/folder hiện tại</param>
+            /// <param name="newName">tên mà đối tượng hiện tại sẽ đổi sang</param>
+            /// <param name="isFileRename">đổi tên file hay folder</param>
+            public static void applyChange(ref FileOrFolder currentFileOrFolder, string newName,bool isFileRename)
+            {
+                
+                string oldPath = currentFileOrFolder.path + "\\" + currentFileOrFolder.name;
+                string newPath = currentFileOrFolder.path + "\\" + newName;
+
+                if(isFileRename)
+                    File.Move(oldPath, newPath);               
+                else // vấn đề: với folder thì nó không phân biệt hoa thường, vd FILENAME và fileaname là không khác nhau với hệ thống
+                {// nên khi người dùng chọn viết hoa tất cả chúng ta sẽ gặp lỗi => đổi qua tên trung gian rồi đổi lại theo ý người dùng
+                    string dummyName = "asd" + currentFileOrFolder.name; // đây là con trung gian
+                    string dummyPath = currentFileOrFolder.path + "\\" + dummyName;
+                    Directory.Move(oldPath, dummyPath);
+                    Directory.Move(dummyPath, newPath);
+                }
+
+                currentFileOrFolder.name = newName;
+            }
+
+            
+        }
+
+
+        // mấy cái đối tượng và hàm cần thiết để chạy chương trình 
+
         FileOrFolderDAO toolDAO = new FileOrFolderDAO();
         ObservableCollection<FileOrFolder> fileData = null;
         ObservableCollection<FileOrFolder> folderData = null;
+        ObservableCollection<string> filePreview = null;
+        ObservableCollection<string> folderPreview = null;
 
+
+        private void getEveryThingReady(bool isFile)
+        {
+            if (isFile && filePreview == null)
+                this.filePreview = toolDAO.cloneToPreview(this.fileData);
+            else if (!isFile && folderPreview == null)
+                this.folderPreview = toolDAO.cloneToPreview(this.folderData);
+               
+        }
+
+        // Xử lí sự kiện từ khúc này 
+        /// <summary>
+        /// Thêm file 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddFileComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var modeSelected = ((ComboBox)sender).SelectedIndex;
@@ -174,6 +273,11 @@ namespace WpfApp2
             }
         }
 
+        /// <summary>
+        /// Thêm folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddFoulderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var modeSelected = ((ComboBox)sender).SelectedIndex;
@@ -195,8 +299,11 @@ namespace WpfApp2
 
         private void AddMethodComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            
         }
+
+        //Hàm cũ của tứng
+        /*
         /// <summary>
         /// Viết hoa mỗi chữ cái đầu của mỗi từ
         /// </summary>
@@ -208,9 +315,9 @@ namespace WpfApp2
             StringBuilder oldNameStringBuilder = new StringBuilder(oldName);
             oldNameStringBuilder[0] = char.ToUpper(oldNameStringBuilder[0]);
 
-            for(int i=1; i< oldName.Length; i++)
+            for (int i = 1; i < oldName.Length; i++)
             {
-                if(oldName[i] != ' ' && oldName[i-1]==' ')
+                if (oldName[i] != ' ' && oldName[i - 1] == ' ')
                 {
                     oldNameStringBuilder[i] = char.ToUpper(oldNameStringBuilder[i]);
                 }
@@ -224,7 +331,7 @@ namespace WpfApp2
             return newName;
 
         }
-        private ObservableCollection<FileOrFolder> NewCase(ObservableCollection<FileOrFolder> input,int type)
+        private ObservableCollection<FileOrFolder> NewCase(ObservableCollection<FileOrFolder> input, int type)
         {
             ObservableCollection<FileOrFolder> result = new ObservableCollection<FileOrFolder>();
             IEnumerable<FileOrFolder> array = input;
@@ -235,10 +342,10 @@ namespace WpfApp2
                     newName = i.name.ToUpper();
                 else if (type == 2)
                     newName = i.name.ToLower();
-                else newName=UpperFirstLetter(i.name);
-                result.Add(new FileOrFolder() { name = newName, path=i.path});
+                else newName = UpperFirstLetter(i.name);
+                result.Add(new FileOrFolder() { name = newName, path = i.path });
             }
-          
+
 
             return result;
         }
@@ -251,7 +358,7 @@ namespace WpfApp2
         /// Hàm lưu tên file
         /// </summary>
         /// <param name="output"></param>
-        void SaveFile(ObservableCollection<FileOrFolder> output,bool isFileRename)
+        void SaveFile(ObservableCollection<FileOrFolder> output, bool isFileRename)
         {
             // lấy tên file từ trong output ra xong rồi lưu lại tên mới
             IEnumerable<FileOrFolder> oldNameArray;
@@ -268,7 +375,7 @@ namespace WpfApp2
             string sourceFileName;
             string destFileName;
             int arraySize = newNameArray.Count();
-            for(int i = 0; i < arraySize; i++)
+            for (int i = 0; i < arraySize; i++)
             {
                 if (arraySize == 1)
                 {
@@ -277,12 +384,12 @@ namespace WpfApp2
                 }
                 else
                 {
-                    sourceFileName = oldNameArray.ElementAt(i).path+ "\\" + oldNameArray.ElementAt(i).name;
-                    destFileName = newNameArray.ElementAt(i).path+ "\\"  + newNameArray.ElementAt(i).name;
+                    sourceFileName = oldNameArray.ElementAt(i).path + "\\" + oldNameArray.ElementAt(i).name;
+                    destFileName = newNameArray.ElementAt(i).path + "\\" + newNameArray.ElementAt(i).name;
                 }
                 if (isFileRename)
                 {
-                    File.Move(sourceFileName, destFileName); 
+                    File.Move(sourceFileName, destFileName);
                 }
                 else
                 {
@@ -291,42 +398,117 @@ namespace WpfApp2
                 }
             }
             MessageBox.Show("Save Successfully");
-            
+
         }
+        */
+        //Hết hàm cũ của tứng
         
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-
+            this.fileData.Clear();
+            this.folderData.Clear();
+            this.filePreview.Clear();
+            this.folderPreview.Clear();
         }
 
         private void StartBatchButton_Click(object sender, RoutedEventArgs e)
         {
-            if (fileData != null)
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
+            
+            bool mode = (tabSelected == "Rename File") ? true : false;
+
+            for (int i = 0; i < this.fileData.Count; i++)
             {
-                SaveFile(output, true);
+               var temp = fileData[i];
+               FileOrFolderBus.applyChange(ref temp, filePreview[i], mode);
+               fileData[i] = temp;
             }
-            if (folderData != null)
+            
+        }
+
+        private void UpperCaseCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
+
+            if(tabSelected == "Rename File")
             {
-                SaveFile(output, false);
+                
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.NewCase(ref temp, 1);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.NewCase(ref temp, 1);
+                    folderPreview[i] = temp;
+                }
             }
         }
 
+        private void LowerCaseCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
+
+            if (tabSelected == "Rename File")
+            {
+
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.NewCase(ref temp, 2);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.NewCase(ref temp, 2);
+                    folderPreview[i] = temp;
+                }
+            }
+
+        }
+
+        private void UpperFirstLetterCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
+
+            if (tabSelected == "Rename File")
+            {
+
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.UpperFirstLetter(ref temp);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.UpperFirstLetter(ref temp);
+                    folderPreview[i] = temp;
+                }
+            }
+        }
+        //
         //==================================CÁC HÀNH ĐỘNG VỚI TỆP TIN================================
 
         // VIẾT HOA
-        private void UpperCaseCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            output = fileData;
-            if (output == null)
-            {
-                output = folderData;
-            }
-            output = NewCase(output, 1);
-            if (fileData != null)
-                NewFileNameListView.ItemsSource = output;
-            else
-                NewFolderNameListView.ItemsSource = output;
-        }
+
 
         private void UpperCaseCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -340,21 +522,7 @@ namespace WpfApp2
         }
 
         // VIẾT THƯỜNG
-        private void LowerCaseCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            output = fileData;
-            previousOutput = fileData;
-            if (output == null)
-            {
-                output = folderData;
-            }
-            // previousOutput = output;
-            output = NewCase(output, 2);
-            if (fileData != null)
-                NewFileNameListView.ItemsSource = output;
-            else
-                NewFolderNameListView.ItemsSource = output;
-        }
+       
 
         private void LowerCaseCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -362,21 +530,7 @@ namespace WpfApp2
         }
 
         // VIẾT HOA CHỮ CÁI ĐẦU
-        private void UpperFirstLetterCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            output = fileData;
-            previousOutput = fileData;
-            if (output == null)
-            {
-                output = folderData;
-            }
-            // previousOutput = output;
-            output = NewCase(output, 3);
-            if (fileData != null)
-                NewFileNameListView.ItemsSource = output;
-            else
-                NewFolderNameListView.ItemsSource = output;
-        }
+       
 
         private void UpperFirstLetterCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
