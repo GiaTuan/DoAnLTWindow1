@@ -177,8 +177,8 @@ namespace WpfApp2
             public static void UpperFirstLetter(ref string inputName)
             {
                 string dummyString = inputName;
-                StringBuilder newName = new StringBuilder(dummyString);             
-
+                StringBuilder newName = new StringBuilder(dummyString);
+                newName[0] = char.ToUpper(newName[0]);
                 for (int i = 1; i < dummyString.Length; i++)
                     if (dummyString[i] != ' ' && dummyString[i - 1] == ' ')
                         newName[i] = char.ToUpper(newName[i]);                 
@@ -198,9 +198,34 @@ namespace WpfApp2
                 if (mode == 1)
                     inputName = inputName.ToUpper();
                 else if (mode == 2)
-                    inputName = inputName.ToUpper();
+                    inputName = inputName.ToLower();
             }
 
+            public static void Replace(ref string inputName, string oldString, string newString)
+            {
+                bool isContain=inputName.Contains(oldString);
+                if(isContain)
+                {
+                    if(newString== null)
+                    {
+                        inputName = inputName.Remove(inputName.IndexOf(oldString), oldString.Count());
+                    }
+                    else
+                    {
+                        inputName = inputName.Replace(oldString, newString);
+                    }
+                }
+                else
+                {
+                   
+                }
+            }
+            public static void Unique(ref string inputName)
+            {
+                Guid guid = Guid.NewGuid();
+                inputName = guid.ToString();
+            }
+       
             /// <summary>
             /// Áp dụng các tùy chỉnh của người dùng lên tên file/folder
             /// </summary>
@@ -237,15 +262,23 @@ namespace WpfApp2
         ObservableCollection<FileOrFolder> folderData = null;
         ObservableCollection<string> filePreview = null;
         ObservableCollection<string> folderPreview = null;
-
+        string oldString = null;
+        string newString = null;
 
         private void getEveryThingReady(bool isFile)
         {
             if (isFile && filePreview == null)
+            {
                 this.filePreview = toolDAO.cloneToPreview(this.fileData);
+                NewFileNameListView.ItemsSource = filePreview;
+            }
             else if (!isFile && folderPreview == null)
+            {
                 this.folderPreview = toolDAO.cloneToPreview(this.folderData);
-               
+                NewFolderNameListView.ItemsSource = folderPreview;
+
+            }
+
         }
 
         // Xử lí sự kiện từ khúc này 
@@ -413,17 +446,32 @@ namespace WpfApp2
 
         private void StartBatchButton_Click(object sender, RoutedEventArgs e)
         {
-            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
-            
-            bool mode = (tabSelected == "Rename File") ? true : false;
-
-            for (int i = 0; i < this.fileData.Count; i++)
+            // nếu filePreview không có giá trị thì hiện thông báo bạn chưa đổi tên file hoặc folder
+            if (filePreview == null && folderPreview == null)
             {
-               var temp = fileData[i];
-               FileOrFolderBus.applyChange(ref temp, filePreview[i], mode);
-               fileData[i] = temp;
+                MessageBox.Show("Not change name yet");
+                return;
             }
-            
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
+        
+            bool mode = (tabSelected == "Rename File") ? true : false;
+            int numbersOfData = this.fileData != null ? this.fileData.Count : this.folderData.Count;
+            for (int i = 0; i < numbersOfData; i++)
+            {
+                if (mode == true)
+                {
+                    var temp = fileData[i];
+                    FileOrFolderBus.applyChange(ref temp, filePreview[i], mode);
+                    fileData[i] = temp;
+                }
+                else
+                {
+                    var temp = folderData[i];
+                    FileOrFolderBus.applyChange(ref temp, folderPreview[i], mode);
+                    folderData[i] = temp;
+                }
+            }
+            MessageBox.Show("Saved");
         }
 
         private void UpperCaseCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -432,7 +480,8 @@ namespace WpfApp2
 
             if(tabSelected == "Rename File")
             {
-                
+                this.getEveryThingReady(true);
+
                 for (int i = 0; i < this.fileData.Count; i++)
                 {
                     var temp = filePreview[i];
@@ -443,13 +492,15 @@ namespace WpfApp2
             else
             {
                 this.getEveryThingReady(false);
-                for (int i = 0; i < this.fileData.Count; i++)
+
+                for (int i = 0; i < this.folderData.Count; i++)
                 {
                     var temp = folderPreview[i];
                     FileOrFolderBus.NewCase(ref temp, 1);
                     folderPreview[i] = temp;
                 }
             }
+            
         }
 
         private void LowerCaseCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -458,6 +509,7 @@ namespace WpfApp2
 
             if (tabSelected == "Rename File")
             {
+                this.getEveryThingReady(true);
 
                 for (int i = 0; i < this.fileData.Count; i++)
                 {
@@ -469,7 +521,8 @@ namespace WpfApp2
             else
             {
                 this.getEveryThingReady(false);
-                for (int i = 0; i < this.fileData.Count; i++)
+
+                for (int i = 0; i < this.folderData.Count; i++)
                 {
                     var temp = folderPreview[i];
                     FileOrFolderBus.NewCase(ref temp, 2);
@@ -485,6 +538,7 @@ namespace WpfApp2
 
             if (tabSelected == "Rename File")
             {
+                this.getEveryThingReady(true);
 
                 for (int i = 0; i < this.fileData.Count; i++)
                 {
@@ -496,7 +550,7 @@ namespace WpfApp2
             else
             {
                 this.getEveryThingReady(false);
-                for (int i = 0; i < this.fileData.Count; i++)
+                for (int i = 0; i < this.folderData.Count; i++)
                 {
                     var temp = folderPreview[i];
                     FileOrFolderBus.UpperFirstLetter(ref temp);
@@ -539,7 +593,76 @@ namespace WpfApp2
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show(oldString);
+        }
 
+
+
+        private void OldStringTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void NewStringTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          
+
+        }
+
+        private void ReplaceButton_Click(object sender, RoutedEventArgs e)
+        {
+            oldString = this.OldStringTextBox.Text;
+            newString = this.NewStringTextBox.Text;
+            var tabSelected = ((TabItem)this.tabControl.SelectedItem).Header.ToString();
+            if (tabSelected == "Rename File")
+            {
+                this.getEveryThingReady(true);
+
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.Replace(ref temp, oldString, newString);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+
+                for (int i = 0; i < this.folderData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.Replace(ref temp, oldString, newString);
+                    folderPreview[i] = temp;
+                }
+            }
+        }
+
+        private void UniqueNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            var tabSelected = ((TabItem)this.tabControl.SelectedItem).Header.ToString();
+            if (tabSelected == "Rename File")
+            {
+                this.getEveryThingReady(true);
+
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.Unique(ref temp);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+
+                for (int i = 0; i < this.folderData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.Unique(ref temp);
+                    folderPreview[i] = temp;
+                }
+            }
         }
 
         //trashhhhhhhhhhhhhhhhhhhhhhhh
