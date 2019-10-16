@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -178,7 +179,12 @@ namespace WpfApp2
             {
                 string dummyString = inputName;
                 StringBuilder newName = new StringBuilder(dummyString);
-                newName[0] = char.ToUpper(newName[0]);
+
+                if (dummyString[0] != ' ')
+                {
+                    newName[0] = char.ToUpper(newName[0]);
+                }
+
                 for (int i = 1; i < dummyString.Length; i++)
                     if (dummyString[i] != ' ' && dummyString[i - 1] == ' ')
                         newName[i] = char.ToUpper(newName[i]);                 
@@ -251,7 +257,39 @@ namespace WpfApp2
                 currentFileOrFolder.name = newName;
             }
 
-            
+            public static void FullNameNormalize(ref string inputName)
+            {
+                const string spliter = " ";
+                FileOrFolderBus.NewCase(ref inputName, 2);
+                FileOrFolderBus.UpperFirstLetter(ref inputName);
+
+                //tach tokens
+                string[] tokens;
+                tokens = inputName.Split(new string[] { spliter }, StringSplitOptions.RemoveEmptyEntries);
+                StringBuilder newName = new StringBuilder();
+
+                //kiểm tra là đang lưu tên file hay tên folder
+                int type = 0;
+                int tokensSize = tokens.Count();
+                if(tokens[tokensSize-1].ToString()[0]=='.')  //kiểm tra string cuối cùng có chứa dấu . ở đầu hay không
+                {
+                    type = 1; //là đang lưu tên file
+                }
+
+                for(int i=0;i< tokensSize;i++)
+                {
+                    if (type == 1 && i == tokensSize - 2)
+                    {
+                        newName = newName.Append(tokens[i]);
+                        continue;
+                    }
+                    newName = newName.Append(tokens[i]);
+                    newName = newName.Append(" ");
+                }
+                Debug.WriteLine(newName.ToString());
+                inputName = newName.ToString();
+            }
+
         }
 
 
@@ -334,108 +372,6 @@ namespace WpfApp2
         {
             
         }
-
-        //Hàm cũ của tứng
-        /*
-        /// <summary>
-        /// Viết hoa mỗi chữ cái đầu của mỗi từ
-        /// </summary>
-        /// <param name="oldName"></param>
-        /// <returns></returns>
-        private string UpperFirstLetter(string oldName)
-        {
-            string newName = null;
-            StringBuilder oldNameStringBuilder = new StringBuilder(oldName);
-            oldNameStringBuilder[0] = char.ToUpper(oldNameStringBuilder[0]);
-
-            for (int i = 1; i < oldName.Length; i++)
-            {
-                if (oldName[i] != ' ' && oldName[i - 1] == ' ')
-                {
-                    oldNameStringBuilder[i] = char.ToUpper(oldNameStringBuilder[i]);
-                }
-                else
-                {
-                    oldNameStringBuilder[i] = char.ToLower(oldNameStringBuilder[i]);
-
-                }
-            }
-            newName = oldNameStringBuilder.ToString();
-            return newName;
-
-        }
-        private ObservableCollection<FileOrFolder> NewCase(ObservableCollection<FileOrFolder> input, int type)
-        {
-            ObservableCollection<FileOrFolder> result = new ObservableCollection<FileOrFolder>();
-            IEnumerable<FileOrFolder> array = input;
-            string newName;
-            foreach (var i in array)
-            {
-                if (type == 1)
-                    newName = i.name.ToUpper();
-                else if (type == 2)
-                    newName = i.name.ToLower();
-                else newName = UpperFirstLetter(i.name);
-                result.Add(new FileOrFolder() { name = newName, path = i.path });
-            }
-
-
-            return result;
-        }
-
-
-        ObservableCollection<FileOrFolder> output;
-        ObservableCollection<FileOrFolder> previousOutput = new ObservableCollection<FileOrFolder>();
-
-        /// <summary>
-        /// Hàm lưu tên file
-        /// </summary>
-        /// <param name="output"></param>
-        void SaveFile(ObservableCollection<FileOrFolder> output, bool isFileRename)
-        {
-            // lấy tên file từ trong output ra xong rồi lưu lại tên mới
-            IEnumerable<FileOrFolder> oldNameArray;
-            if (isFileRename)
-            {
-                oldNameArray = fileData;
-            }
-            else
-            {
-                oldNameArray = folderData;
-            }
-
-            IEnumerable<FileOrFolder> newNameArray = output;
-            string sourceFileName;
-            string destFileName;
-            int arraySize = newNameArray.Count();
-            for (int i = 0; i < arraySize; i++)
-            {
-                if (arraySize == 1)
-                {
-                    sourceFileName = oldNameArray.ElementAt(i).path + oldNameArray.ElementAt(i).name;
-                    destFileName = newNameArray.ElementAt(i).path + newNameArray.ElementAt(i).name;
-                }
-                else
-                {
-                    sourceFileName = oldNameArray.ElementAt(i).path + "\\" + oldNameArray.ElementAt(i).name;
-                    destFileName = newNameArray.ElementAt(i).path + "\\" + newNameArray.ElementAt(i).name;
-                }
-                if (isFileRename)
-                {
-                    File.Move(sourceFileName, destFileName);
-                }
-                else
-                {
-                    Debug.WriteLine($"{sourceFileName}{destFileName}");
-                    Directory.Move(sourceFileName, destFileName);
-                }
-            }
-            MessageBox.Show("Save Successfully");
-
-        }
-        */
-        //Hết hàm cũ của tứng
-        
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             this.fileData.Clear();
@@ -558,21 +494,13 @@ namespace WpfApp2
                 }
             }
         }
-        //
-        //==================================CÁC HÀNH ĐỘNG VỚI TỆP TIN================================
 
         // VIẾT HOA
 
 
         private void UpperCaseCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            //output = previousOutput;
-            //if (fileData != null)
-            //{
-            //    NewFileNameListView.ItemsSource = output;
-            //}
-            //else
-            //    NewFolderNameListView.ItemsSource = output;
+           
         }
 
         // VIẾT THƯỜNG
@@ -591,26 +519,59 @@ namespace WpfApp2
 
         }
 
+        private void WriteToFile(StreamWriter fileOut)
+        {
+            if (UpperCaseCheckBox.IsChecked.HasValue && UpperCaseCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("1");
+            }
+            if (LowerCaseCheckBox.IsChecked.HasValue && LowerCaseCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("2");
+            }
+            if (UpperFirstLetterCheckBox.IsChecked.HasValue && UpperFirstLetterCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("3");
+            }
+            if (_isReplaceButtonClicked)
+            {
+                fileOut.WriteLine($"4 {OldStringTextBox.Text} {NewStringTextBox.Text}");
+            }
+            if (_isUniqueNameButtonClicked)
+            {
+                fileOut.WriteLine($"5");
+            }
+            if (_isFullNameNormalizeButtonClicked)
+            {
+                fileOut.WriteLine($"6");
+            }
+            fileOut.Close();
+        }
+
+
+        /// <summary>
+        /// Lưu những chức năng đã chọn xuống file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(oldString);
+            Window1 screen = new Window1();
+
+            //mở cửa sổ mới để người dụng nhập tên preset
+            if (screen.ShowDialog() == true)
+            {
+                string nameFile=screen.PreSetName;
+                StreamWriter fileOut = new StreamWriter($"Preset/{nameFile}.txt");
+                WriteToFile(fileOut);             
+                presetNames.Add(nameFile);
+            }
         }
 
-
-
-        private void OldStringTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void NewStringTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-          
-
-        }
-
+        bool _isReplaceButtonClicked = false;
         private void ReplaceButton_Click(object sender, RoutedEventArgs e)
         {
+            _isReplaceButtonClicked = true;
             oldString = this.OldStringTextBox.Text;
             newString = this.NewStringTextBox.Text;
             var tabSelected = ((TabItem)this.tabControl.SelectedItem).Header.ToString();
@@ -637,9 +598,10 @@ namespace WpfApp2
                 }
             }
         }
-
+        bool _isUniqueNameButtonClicked =false;
         private void UniqueNameButton_Click(object sender, RoutedEventArgs e)
         {
+            _isUniqueNameButtonClicked = true;
             var tabSelected = ((TabItem)this.tabControl.SelectedItem).Header.ToString();
             if (tabSelected == "Rename File")
             {
@@ -665,104 +627,121 @@ namespace WpfApp2
             }
         }
 
-        //trashhhhhhhhhhhhhhhhhhhhhhhh
-        /*
-CheckBox upperCaseCheckBox;
-/// <summary>
-/// tạo ra khung khi chọn method
-/// </summary>
-/// <returns></returns>
-private TreeViewItem createChildTreeView()
-{
-TreeViewItem item = new TreeViewItem();
-item.IsExpanded = true;
-StackPanel stack = new StackPanel();
 
-//child stackpanel
-StackPanel childStack = new StackPanel();
-childStack.Orientation = Orientation.Horizontal;
-//checkbox
-upperCaseCheckBox = new CheckBox();
-upperCaseCheckBox.Name = "UpperCaseCheckBox";
-upperCaseCheckBox.VerticalAlignment = VerticalAlignment.Center;
-childStack.Children.Add(upperCaseCheckBox);
+      
+        bool _isFullNameNormalizeButtonClicked = false;
+        private void FullNameNormalizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isFullNameNormalizeButtonClicked = true;
+            var tabSelected = ((TabItem)(this.tabControl.SelectedItem)).Header.ToString();
 
-//Label
-Label upperCaseLabel = new Label();
-upperCaseLabel.Content = "Upper All Elements";
-childStack.Children.Add(upperCaseLabel);
+            if (tabSelected == "Rename File")
+            {
+                this.getEveryThingReady(true);
 
-//add to father stack
-stack.Children.Add(childStack);
-item.Header = stack;
-return item;
-}
+                for (int i = 0; i < this.fileData.Count; i++)
+                {
+                    var temp = filePreview[i];
+                    FileOrFolderBus.FullNameNormalize(ref temp);
+                    filePreview[i] = temp;
+                }
+            }
+            else
+            {
+                this.getEveryThingReady(false);
+                for (int i = 0; i < this.folderData.Count; i++)
+                {
+                    var temp = folderPreview[i];
+                    FileOrFolderBus.FullNameNormalize(ref temp);
+                    folderPreview[i] = temp;
+                }
+            }
+        }
 
-private void AddMethodComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-{
-var item = (ComboBox)sender;
-var index = item.SelectedIndex;
-if (index == 1)
-{
-TreeViewItem treeItem = new TreeViewItem();
-treeItem.Header = "New Case";
-treeItem.Items.Add(createChildTreeView());
+        private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var presetName = this.PresetComboBox.SelectedItem.ToString();
+            //mo file
+            try
+            {
+                var fileIn = File.ReadAllLines($"Preset\\{presetName}.txt");
+                foreach (var line in fileIn)
+                {
+                    ExecuteLine(line);
+                }
+            }
+            catch(FileNotFoundException)
+            {
+                MessageBox.Show("Cannot open file");
+            }
+        }
 
-//MethodListView.Items.Add("New case");
-MethodTreeView.Items.Add(treeItem);
-}
-else if (index == 2)
-{
+        private void ExecuteLine(string line)
+        {
+            var newLine = SplitLine(line);
+            if (Int32.Parse(newLine[0]) == 1)
+            {
+                UpperCaseCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 2)
+            {
+                LowerCaseCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 3)
+            {
+                UpperFirstLetterCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 4)
+            {
+                this.OldStringTextBox.Text = newLine[1];
+                this.NewStringTextBox.Text = newLine[2];
+                this.ReplaceButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 5)
+            {
+                this.UniqueNameButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 6)
+            {
+                this.FullNameNormalizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
 
-TreeViewItem treeItem = new TreeViewItem();
-treeItem.Header = "Unique Name";
-treeItem.Items.Add(new TreeViewItem());
-//MethodListView.Items.Add("Unique Name");
-MethodTreeView.Items.Add(treeItem);
-}
-}
-private void ClearButton_Click(object sender, RoutedEventArgs e)
-{
+        }
 
-}
+        private string[] SplitLine(string line)
+        {
+            const string spliter = " ";
+            string[] tokens;
+            tokens=line.Split(new string[] { spliter }, StringSplitOptions.RemoveEmptyEntries);
+            return tokens;
+        }
 
-private ObservableCollection<FileOrFolder> UpperCase(ObservableCollection<FileOrFolder>input)
-{
-ObservableCollection<FileOrFolder> result =null;
-IEnumerable<FileOrFolder> array = input.Where(ten => ten.name !=null);
-foreach(var i in array)
-{
-i.name = i.name.ToUpper();
-result.Add(new FileOrFolder() { name = i.name, path = null });
-}
-MessageBox.Show(result.ToString());
 
-return result;
-}
 
-//private void uppperCaseCheckBox_Check(object sender, RoutedEventArgs e)
-//{
-//    UpperCase
-//    MessageBox.Show("dit me m");
-//}
-void Output()
-{
-Debug.WriteLine("true");
-ObservableCollection<FileOrFolder> output = fileData;
-if (output == null)
-{
-output = folderData;
-}
-if (upperCaseCheckBox.IsChecked ?? false)
-{
+        BindingList<string> presetNames = new BindingList<string>();// chuỗi dùng để chưa các các tên của preset
+        //sau đó sẽ binding tên này vào combobox preset
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+            var dir = new DirectoryInfo("Preset\\");
+            var presetNameFiles = dir.GetFiles();
 
-output = UpperCase(output);
-}
-NewFileNameListView.ItemsSource = output;
-}
-*/
+            foreach (var file in presetNameFiles)
+            {
+               
+                presetNames.Add(file.Name.Replace(".txt",""));
+            }
+
+            PresetComboBox.Items.Clear();
+            PresetComboBox.ItemsSource = presetNames;
+        }
 
     }
-
 }
 

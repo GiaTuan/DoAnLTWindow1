@@ -38,3 +38,5 @@ C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_Batch
 C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_BatchRename\WpfApp2\obj\Debug\WpfApp2.csproj.GenerateResource.cache
 C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_BatchRename\WpfApp2\obj\Debug\WpfApp2.csproj.CoreCompileInputs.cache
 C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_BatchRename\WpfApp2\obj\Debug\WpfApp2.csproj.CopyComplete
+C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_BatchRename\WpfApp2\obj\Debug\Window1.g.cs
+C:\Users\PV\Desktop\DoAnLTWindow1-master\DoAnLTWindow1-master\DoAnLTWindow_BatchRename\WpfApp2\obj\Debug\Window1.baml
