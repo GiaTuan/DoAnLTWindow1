@@ -403,6 +403,10 @@ namespace _1712862_1712867_1712884
                             break;
                         }
                     }
+                    if (count == inputName.Length)
+                    {
+                        return;
+                    }
                     extensionName = inputName.Substring(inputName.Length - count);
                     temp2 = inputName.Substring(inputName.Length - 13 - count);
                     temp2 = temp2.Substring(0, temp2.Length - count);
@@ -857,8 +861,10 @@ namespace _1712862_1712867_1712884
 
         }
 
+        bool _isReplaceButtonClicked = false;
         private void ReplaceButton_Click(object sender, RoutedEventArgs e)
         {
+            _isReplaceButtonClicked = true;
             oldString = this.OldStringTextBox.Text;
             newString = this.NewStringTextBox.Text;
             var tabSelected = ((TabItem)this.TabControl.SelectedItem).Header.ToString();
@@ -886,8 +892,10 @@ namespace _1712862_1712867_1712884
             }
         }
 
+        bool _isUniqueNameButtonClicked = false;
         private void UniqueNameButton_Click(object sender, RoutedEventArgs e)
         {
+            _isUniqueNameButtonClicked = true;
             var tabSelected = ((TabItem)this.TabControl.SelectedItem).Header.ToString();
             if (tabSelected == "Rename Files")
             {
@@ -933,8 +941,10 @@ namespace _1712862_1712867_1712884
 
 
 
+        bool _isFullNameNormalizeButtonClicked = false;
         private void Nomalize_Click(object sender, RoutedEventArgs e)
         {
+            _isFullNameNormalizeButtonClicked = true;
             var tabSelected = ((TabItem)this.TabControl.SelectedItem).Header.ToString();
             if (tabSelected == "Rename Files")
             {
@@ -1098,6 +1108,130 @@ namespace _1712862_1712867_1712884
                     folderPreview[i] = temp;
                 }
             }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveWindow screen = new SaveWindow();
+
+            //Mở cửa sổ mới để người dụng nhập tên preset
+            if (screen.ShowDialog() == true)
+            {
+                string nameFile = screen.PreSetName;
+                StreamWriter fileOut = new StreamWriter($"Preset/{nameFile}.txt");
+                WriteToFile(fileOut);
+                presetNames.Add(nameFile);
+            }
+        }
+
+        private void WriteToFile(StreamWriter fileOut)
+        {
+            if (UpperCaseCheckBox.IsChecked.HasValue && UpperCaseCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("1");
+            }
+            if (LowerCaseCheckBox.IsChecked.HasValue && LowerCaseCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("2");
+            }
+            if (UpperFirstLetterCheckBox.IsChecked.HasValue && UpperFirstLetterCheckBox.IsChecked.Value == true)
+            {
+                fileOut.WriteLine("3");
+            }
+            if (_isReplaceButtonClicked)
+            {
+                fileOut.WriteLine($"4 {OldStringTextBox.Text} {NewStringTextBox.Text}");
+            }
+            if (_isUniqueNameButtonClicked)
+            {
+                fileOut.WriteLine($"5");
+            }
+            if (_isFullNameNormalizeButtonClicked)
+            {
+                fileOut.WriteLine($"6");
+            }
+            fileOut.Close();
+        }
+
+
+        //Chuỗi dùng để chưa các các tên của preset sau đó sẽ binding tên này vào combobox preset
+        BindingList<string> presetNames = new BindingList<string>();
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            var dir = new DirectoryInfo("Preset\\");
+            var presetNameFiles = dir.GetFiles();
+
+            foreach (var file in presetNameFiles)
+            {
+
+                presetNames.Add(file.Name.Replace(".txt", ""));
+            }
+
+            PresetComboBox.Items.Clear();
+            PresetComboBox.ItemsSource = presetNames;
+        }
+
+        private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var presetName = this.PresetComboBox.SelectedItem.ToString();
+            //Mo File
+            try
+            {
+                var fileIn = File.ReadAllLines($"Preset\\{presetName}.txt");
+                foreach (var line in fileIn)
+                {
+                    ExecuteLine(line);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Cannot open file");
+            }
+        }
+
+        private void ExecuteLine(string line)
+        {
+            var newLine = SplitLine(line);
+            if (Int32.Parse(newLine[0]) == 1)
+            {
+                UpperCaseCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 2)
+            {
+                LowerCaseCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 3)
+            {
+                UpperFirstLetterCheckBox.IsChecked = true;
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 4)
+            {
+                this.OldStringTextBox.Text = newLine[1];
+                this.NewStringTextBox.Text = newLine[2];
+                this.ReplaceButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 5)
+            {
+                this.UniqueNameButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 6)
+            {
+                this.FullnameNormalizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+        }
+        private string[] SplitLine(string line)
+        {
+            const string spliter = " ";
+            string[] tokens;
+            tokens = line.Split(new string[] { spliter }, StringSplitOptions.RemoveEmptyEntries);
+            return tokens;
         }
     }
 }

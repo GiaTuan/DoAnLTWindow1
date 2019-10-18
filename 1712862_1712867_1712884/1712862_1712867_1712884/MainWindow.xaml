@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_1712862_1712867_1712884"
         mc:Ignorable="d"
-        Title="MainWindow" Height="771.467" Width="910.87">
+        Title="MainWindow" Height="771.467" Width="910.87" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -89,7 +89,7 @@
                     <ColumnDefinition Width="7*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button>
+                <Button Name="SaveButton" Grid.Column="0" Click="SaveButton_Click">
                     <Image Source="/Images/Save.png" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Button>
 
@@ -103,10 +103,8 @@
                         <TextBlock Text="Presets:" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
 
-                    <ComboBox Grid.Column="1" BorderThickness="3" BorderBrush="LightBlue">
-                        <ComboBoxItem>1</ComboBoxItem>
-                        <ComboBoxItem>2</ComboBoxItem>
-                        <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBox Name="PresetComboBox" Grid.Column="1" BorderThickness="3" BorderBrush="LightBlue" SelectionChanged="PresetComboBox_SelectionChanged">
+                        <ComboBoxItem Content="{Binding}"></ComboBoxItem>
                     </ComboBox>
                 </Grid>
             </Grid>
@@ -138,7 +136,7 @@
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
                         <TreeViewItem Name="UniqueNameMethod" Header="Unique Name:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="UniqueNameMethod_Expanded">
                             <StackPanel Orientation="Vertical">
-                                <Button Content="Change" Width="80" Height="25" Margin="0,10,0,0" Click="UniqueNameButton_Click" Background="WhiteSmoke"></Button>
+                                <Button Name="UniqueNameButton" Content="Change" Width="80" Height="25" Margin="0,10,0,0" Click="UniqueNameButton_Click" Background="WhiteSmoke"></Button>
                             </StackPanel>
                         </TreeViewItem>
                         <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
@@ -147,7 +145,7 @@
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
                         <TreeViewItem Name="FullnameNormalizeMethod" Header="Fullname Normalize:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="FullnameNormalizeMethod_Expanded">
                             <StackPanel Orientation="Vertical">
-                                <Button Name="Nomalize" Content="Normalize" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="Nomalize_Click"></Button>
+                                <Button Name="FullnameNormalizeButton" Content="Normalize" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="Nomalize_Click"></Button>
                             </StackPanel>
                         </TreeViewItem>
                         <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>

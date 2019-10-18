@@ -17,3 +17,5 @@ C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862
 C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862_1712867_1712884\bin\Debug\Microsoft.WindowsAPICodePack.xml
 C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862_1712867_1712884\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
 C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862_1712867_1712884\obj\Debug\1712862_1712867_1712884.csproj.CopyComplete
+C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862_1712867_1712884\obj\Debug\SaveWindow.g.cs
+C:\Users\Tung Nguyen\source\repos\WPF KHTN\DoAn1\1712862_1712867_1712884\1712862_1712867_1712884\obj\Debug\SaveWindow.baml
