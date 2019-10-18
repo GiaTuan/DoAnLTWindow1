@@ -1,0 +1,315 @@
+﻿<Window x:Class="_1712862_1712867_1712884.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_1712862_1712867_1712884"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="771.467" Width="910.87">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Name="refreshButton"  Grid.Column="0" Background="LightGray" Click="refreshButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Refresh.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBlock Text="Refresh" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <ComboBox Grid.Column="1" Background="LightGray">
+                <ComboBoxItem Visibility="Collapsed" IsSelected="True">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Question.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Text="Help" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </ComboBoxItem>
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+            </ComboBox>
+            <Button Name="StartBatchButton" Grid.Column="2" Background="LightGray" Click="StartBatchButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Start.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBlock Text="Start Batch" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="8*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4.5*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox Name="addMethod" Grid.Column="0" SelectionChanged="addMethod_SelectionChanged" Height="67" VerticalAlignment="Bottom">
+                    <ComboBoxItem Name="AddMethodItem" Visibility="Collapsed" IsSelected="True">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/Add.jpg" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add Method" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Name="NewCase" Content="New Case" FontWeight="Bold"/>
+                    <ComboBoxItem Name="Replace" Content="Replace" FontWeight="Bold"/>
+                    <ComboBoxItem Name="UniqueName"  Content="Unique Name" FontWeight="Bold"/>
+                    <ComboBoxItem Name="FullnameNormalize" Content="Fullname Normalize" FontWeight="Bold"/>
+                    <ComboBoxItem Name="Move" Content="Move" FontWeight="Bold"/>
+                </ComboBox>
+                <Button Name="clearButton" Grid.Column="1" Background="LightGray" Click="clearButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Clear.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Text="Clear" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Grid Grid.Column="2" Background="LightGray"></Grid>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button>
+                    <Image Source="/Images/Save.png" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                </Button>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="7*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Background="LightGray">
+                        <TextBlock Text="Presets:" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
+                    </Grid>
+
+                    <ComboBox Grid.Column="1" BorderThickness="3" BorderBrush="LightBlue">
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Row="3" Grid.Column="0" Background="LightGray">
+                <TreeView Name="MethodList" Background="LightBlue">
+                    <StackPanel Name="Method1" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                        <TreeViewItem Name="NewCaseMethod" Header="New Case:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="NewCaseMethod_Expanded">
+                            <CheckBox Name="UpperCaseCheckBox" Content="Upper Case" Checked="UpperCaseCheckBox_Checked" Unchecked="UpperCaseCheckBox_Unchecked"></CheckBox>
+                            <CheckBox Name="LowerCaseCheckBox" Content="Lower Case" Checked="LowerCaseCheckBox_Checked" Unchecked="LowerCaseCheckBox_Unchecked"></CheckBox>
+                            <CheckBox Name="UpperFirstLetterCheckBox" Content="Upper First Letter of Words" Checked="UpperFirstLetterCheckBox_Checked"  Unchecked="UpperFirstLetterCheckBox_Unchecked"></CheckBox>
+                        </TreeViewItem>
+                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                    <StackPanel  Name="Method2" Orientation="Horizontal"  Margin="0,0,0,5">
+                        <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                        <TreeViewItem Name="ReplaceMethod"  Header="Replace:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="ReplaceMethod_Expanded">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="String you want to replace:"></TextBlock>
+                                <TextBox Text="" Name="OldStringTextBox" BorderThickness="1"  Margin="20,0,0,0" Height="21" Width="160" TextChanged="OldStringTextBox_TextChanged"></TextBox>
+                                <TextBlock Text="New string:" ></TextBlock>
+                                <TextBox Text="" Name="NewStringTextBox" BorderThickness="1" Margin="20,0,0,0" Height="21" Width="160" TextChanged="NewStringTextBox_TextChanged"></TextBox>
+                                <Button Content="Change" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Name="ReplaceButton" Click="ReplaceButton_Click"></Button>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                    <StackPanel Name="Method3" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                        <TreeViewItem Name="UniqueNameMethod" Header="Unique Name:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="UniqueNameMethod_Expanded">
+                            <StackPanel Orientation="Vertical">
+                                <Button Content="Change" Width="80" Height="25" Margin="0,10,0,0" Click="UniqueNameButton_Click" Background="WhiteSmoke"></Button>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                    <StackPanel Name="Method4" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                        <TreeViewItem Name="FullnameNormalizeMethod" Header="Fullname Normalize:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="FullnameNormalizeMethod_Expanded">
+                            <StackPanel Orientation="Vertical">
+                                <Button Name="Nomalize" Content="Normalize" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="Nomalize_Click"></Button>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                    <StackPanel Name="Method5" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                        <TreeViewItem Name="MoveMethod" Header="Move:" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Expanded="MoveMethod_Expanded">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Name="MoveBefore" Content="ISBN Before" Width="80" Height="25" Margin="0,10,5,0" Background="WhiteSmoke" Click="MoveBefore_Click"></Button>
+                                <Button Name="MoveAfter" Content="ISBN After" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="MoveAfter_Click"></Button>
+                            </StackPanel>
+                        </TreeViewItem>
+                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                </TreeView>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1" Background="LightGray"></Grid>
+
+        <TabControl Name="TabControl" Grid.Row="1" Grid.Column="1">
+            <TabItem Header="Rename Files">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="8.5*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="152*"/>
+                        <ColumnDefinition Width="67*"/>
+                        <ColumnDefinition Width="219*"/>
+                        <ColumnDefinition Width="188*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Row="0" Grid.Column="0" Background="LightGray" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Name="addFile" Grid.Column="0" SelectionChanged="addFile_SelectionChanged">
+                            <ComboBoxItem Name="Add1"  Visibility="Collapsed" IsSelected="True">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Images/AddFile.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Add" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </ComboBoxItem>
+                            <ComboBoxItem Content="Simple Element"></ComboBoxItem>
+                            <ComboBoxItem Content="All Elements"></ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.ColumnSpan="2" Grid.Column="2" Background="LightGray"></Grid>
+                    <Grid Grid.Row="1" Grid.Column="0" Background="LightGray" Grid.ColumnSpan="2">
+                        <Label HorizontalAlignment="Left" Content="Filename" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+
+                    <ListView Name="FileNameList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <Grid Grid.Row="1" Grid.Column="2" Background="LightGray">
+                        <Label HorizontalAlignment="Left" Content="New Filename" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+                    <ListView Name="NewFileNameList" Grid.Row="2" Grid.Column="2">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <Grid Grid.Row="1" Grid.Column="3" Background="LightGray">
+                        <Label HorizontalAlignment="Left" Content="Path" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+                    <ListView Name="FilePath" Grid.Row="2" Grid.Column="3">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Path}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Rename Folders">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="8.5*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="9*"/>
+                        <ColumnDefinition Width="24*"/>
+                        <ColumnDefinition Width="187*"/>
+                        <ColumnDefinition Width="219*"/>
+                        <ColumnDefinition Width="188*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Row="0" Grid.Column="0" Background="LightGray" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25*"/>
+                            <ColumnDefinition Width="85*"/>
+                            <ColumnDefinition Width="109*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Name="addFolder" Grid.Column="0" SelectionChanged="addFolder_SelectionChanged" Grid.ColumnSpan="2">
+                            <ComboBoxItem Name="Add2"  Visibility="Collapsed" IsSelected="True">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Images/AddFile.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Add" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </ComboBoxItem>
+                            <ComboBoxItem Content="Simple Element"></ComboBoxItem>
+                            <ComboBoxItem Content="All Elements"></ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.ColumnSpan="2" Grid.Column="3" Background="LightGray"></Grid>
+                    <Grid Grid.Row="1" Grid.Column="0" Background="LightGray" Grid.ColumnSpan="3">
+                        <Label HorizontalAlignment="Left" Content="Foldername" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+
+                    <ListView Name="FolderNameList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <Grid Grid.Row="1" Grid.Column="3" Background="LightGray">
+                        <Label HorizontalAlignment="Left" Content="New Foldername" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+                    <ListView Name="NewFolderNameList" Grid.Row="2" Grid.Column="3">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+
+                    <Grid Grid.Row="1" Grid.Column="4" Background="LightGray">
+                        <Label HorizontalAlignment="Left" Content="Path" Height="40" FontWeight="Bold" Margin="5"></Label>
+                    </Grid>
+                    <ListView Name="FolderPath" Grid.Row="2" Grid.Column="4">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Path}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
