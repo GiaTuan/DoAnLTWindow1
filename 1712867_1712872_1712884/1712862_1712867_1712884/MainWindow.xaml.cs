@@ -544,7 +544,7 @@ namespace _1712862_1712867_1712884
         //bool Flap2 = false; //Cờ 2
         private void getEveryThingReady(bool isFile)
         {
-            if (Flag == true)
+            if (Flag == true || filePreview == null || folderPreview == null)
             {
                 if (isFile) //  && filePreview == null
                 {
@@ -558,7 +558,7 @@ namespace _1712862_1712867_1712884
 
                 }
                 Flag = false;
-            }
+            } 
 
         }
 
