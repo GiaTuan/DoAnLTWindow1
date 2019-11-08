@@ -539,12 +539,12 @@ namespace _1712862_1712867_1712884
 
         private void getEveryThingReady(bool isFile)
         {
-            if (isFile && filePreview == null)
+            if (isFile) // && filePreview == null
             {
                 this.filePreview = toolDAO.cloneToPreview(this.fileData);
                 NewFileNameList.ItemsSource = filePreview;
             }
-            else if (!isFile && folderPreview == null)
+            else if (!isFile)   // && folderPreview == null
             {
                 this.folderPreview = toolDAO.cloneToPreview(this.folderData);
                 NewFolderNameList.ItemsSource = folderPreview;
@@ -563,6 +563,7 @@ namespace _1712862_1712867_1712884
             {
                 if (fileData != null)
                 {
+                    filePreview.Clear();
                     fileData.Clear();
                 }
                 fileData = toolDAO.bindingSingleData(true);
@@ -573,37 +574,42 @@ namespace _1712862_1712867_1712884
             {
                 if (fileData != null)
                 {
+                    filePreview.Clear();
                     fileData.Clear();
                 }
                 fileData = toolDAO.bindingAllData(true);
                 FileNameList.ItemsSource = fileData;
                 FilePath.ItemsSource = fileData;
             }
+            deleteMethod();
             addFile.SelectedIndex = 0;
         }
 
         private void addFolder_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(addFolder.SelectedItem.ToString().Contains("Simple Element")==true)
+            if (addFolder.SelectedItem.ToString().Contains("Simple Element") == true)
             {
                 if (folderData != null)
                 {
+                    folderPreview.Clear();
                     folderData.Clear();
                 }
                 folderData = toolDAO.bindingSingleData(false);
                 FolderNameList.ItemsSource = folderData;
                 FolderPath.ItemsSource = folderData;
             }
-            else if(addFolder.SelectedItem.ToString().Contains("All Elements")==true)
+            else if (addFolder.SelectedItem.ToString().Contains("All Elements") == true)
             {
                 if (folderData != null)
                 {
+                    folderPreview.Clear();
                     folderData.Clear();
                 }
                 folderData = toolDAO.bindingAllData(false);
                 FolderNameList.ItemsSource = folderData;
                 FolderPath.ItemsSource = folderData;
             }
+            deleteMethod();
             addFolder.SelectedIndex = 0;
         }
 
@@ -1260,6 +1266,12 @@ namespace _1712862_1712867_1712884
 
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (this.fileData == null && this.folderData == null && this.filePreview == null && this.folderPreview == null)
+            {
+                MessageBox.Show("Please type file or folder you need to change!!", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                PresetComboBox.SelectedIndex = -1;
+                return;
+            }
             var presetName = this.PresetComboBox.SelectedItem.ToString();
             //Mo File
             try
