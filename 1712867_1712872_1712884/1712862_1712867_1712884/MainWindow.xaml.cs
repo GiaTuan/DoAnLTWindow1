@@ -253,6 +253,10 @@ namespace _1712862_1712867_1712884
 
             public static void Replace(ref string inputName, string oldString, string newString)
             {
+                if(oldString=="")
+                {
+                    return;
+                }
                 bool isContain = inputName.Contains(oldString);
                 if (isContain)
                 {
@@ -594,6 +598,7 @@ namespace _1712862_1712867_1712884
                 FilePath.ItemsSource = fileData;
             }
             deleteMethod();
+            PresetComboBox.SelectedIndex = -1;
             addFile.SelectedIndex = 0;
         }
 
@@ -629,6 +634,7 @@ namespace _1712862_1712867_1712884
                 FolderPath.ItemsSource = folderData;
             }
             deleteMethod();
+            PresetComboBox.SelectedIndex = -1;
             addFolder.SelectedIndex = 0;
         }
 
@@ -953,6 +959,7 @@ namespace _1712862_1712867_1712884
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
+            PresetComboBox.SelectedIndex = -1;
             if (this.fileData != null)
             {
                 this.fileData.Clear();
@@ -1024,6 +1031,7 @@ namespace _1712862_1712867_1712884
 
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
+            PresetComboBox.SelectedIndex = -1;
             if (this.filePreview != null)
             {
                 this.filePreview.Clear();
@@ -1285,6 +1293,7 @@ namespace _1712862_1712867_1712884
 
         private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            deleteMethod();
             if (this.fileData == null && this.folderData == null && this.filePreview == null && this.folderPreview == null)
             {
                 MessageBox.Show("Please type file or folder you need to change!!", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -1305,6 +1314,10 @@ namespace _1712862_1712867_1712884
                 NewFolderNameList.ItemsSource = folderPreview;
             }
 
+            if(PresetComboBox.SelectedIndex == -1)
+            {
+                return;
+            }
 
             var presetName = this.PresetComboBox.SelectedItem.ToString();
             //Mo File
@@ -1327,21 +1340,25 @@ namespace _1712862_1712867_1712884
             var newLine = SplitLine(line);
             if (Int32.Parse(newLine[0]) == 1)
             {
+                checkAddMethod(Method1, "New Case");
                 UpperCaseCheckBox.IsChecked = true;
                 return;
             }
             if (Int32.Parse(newLine[0]) == 2)
             {
+                checkAddMethod(Method1, "New Case");
                 LowerCaseCheckBox.IsChecked = true;
                 return;
             }
             if (Int32.Parse(newLine[0]) == 3)
             {
+                checkAddMethod(Method1, "New Case");
                 UpperFirstLetterCheckBox.IsChecked = true;
                 return;
             }
             if (Int32.Parse(newLine[0]) == 4)
             {
+                checkAddMethod(Method2, "Replace");
                 this.OldStringTextBox.Text = newLine[1];
                 this.NewStringTextBox.Text = newLine[2];
                 this.ReplaceButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -1349,21 +1366,25 @@ namespace _1712862_1712867_1712884
             }
             if (Int32.Parse(newLine[0]) == 5)
             {
+                checkAddMethod(Method3, "Unique Name");
                 this.UniqueNameButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 return;
             }
             if (Int32.Parse(newLine[0]) == 6)
             {
+                checkAddMethod(Method4, "Fullname Normalize");
                 this.FullnameNormalizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 return;
             }
             if (Int32.Parse(newLine[0]) == 7)
             {
+                checkAddMethod(Method5, "Move");
                 this.MoveBefore.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 return;
             }
             if (Int32.Parse(newLine[0]) == 8)
             {
+                checkAddMethod(Method5, "Move");
                 this.MoveAfter.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 return;
             }
