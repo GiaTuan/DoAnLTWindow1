@@ -471,7 +471,6 @@ namespace _1712862_1712867_1712884
 
 
 
-
         /// <summary>
         /// ///////////////////
         /// </summary>
@@ -505,6 +504,11 @@ namespace _1712862_1712867_1712884
 
         void checkAddMethod(StackPanel numberMethod, string methodName)
         {
+            if (this.fileData == null && this.folderData == null && this.filePreview == null && this.folderPreview == null)
+            {
+                MessageBox.Show("Please type file or folder you need to change!!", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
             int check = 0;
             foreach (var i in method)
             {
@@ -921,22 +925,92 @@ namespace _1712862_1712867_1712884
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
+            if (this.fileData != null)
+            {
+                this.fileData.Clear();
+                this.fileData = null;
+            }
+            if (this.folderData != null)
+            {
+                this.folderData.Clear();
+                this.folderData = null;
+            }
+            if (this.filePreview != null)
+            {
+                this.filePreview.Clear();
+                this.filePreview = null;
+            }
+            if (this.folderPreview != null)
+            {
+                this.folderPreview.Clear();
+                this.folderPreview = null;
+            }
 
+            deleteMethod();
+        }
+
+        void deleteMethod()
+        {
+            foreach (var i in method)
+            {
+                if (i.Name.ToString() == "New Case")
+                {
+                    Method1.Background = Brushes.LightGray;
+                    UpperCaseCheckBox.IsChecked = false;
+                    LowerCaseCheckBox.IsChecked = false;
+                    UpperFirstLetterCheckBox.IsChecked = false;
+                    NewCaseMethod.IsExpanded = false;
+                }
+                else if (i.Name.ToString() == "Replace")
+                {
+                    Method2.Background = Brushes.LightGray;
+                    OldStringTextBox.Text = "";
+                    NewStringTextBox.Text = "";
+                    _isReplaceButtonClicked = false;
+                    ReplaceMethod.IsExpanded = false;
+                }
+                else if (i.Name.ToString() == "Unique Name")
+                {
+                    Method3.Background = Brushes.LightGray;
+                    _isUniqueNameButtonClicked = false;
+                    UniqueNameMethod.IsExpanded = false;
+                }
+                else if (i.Name.ToString() == "Fullname Normalize")
+                {
+                    Method4.Background = Brushes.LightGray;
+                    _isFullNameNormalizeButtonClicked = false;
+                    FullnameNormalizeMethod.IsExpanded = false;
+
+                }
+                else if (i.Name.ToString() == "Move")
+                {
+                    Method5.Background = Brushes.LightGray;
+                    _isMoveBeforeButtonClicked = false;
+                    _isMoveAfterButtonClicked = false;
+                    MoveMethod.IsExpanded = false;
+                }
+            }
+
+            method.Clear();
         }
 
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
-            this.fileData.Clear();
-            this.folderData.Clear();
-            this.filePreview.Clear();
-            this.folderPreview.Clear();
+            if (this.filePreview != null)
+            {
+                this.filePreview.Clear();
+                this.filePreview = null;
+            }
+            if (this.folderPreview != null)
+            {
+                this.folderPreview.Clear();
+                this.folderPreview = null;
+            }
+
+            deleteMethod();
         }
 
 
@@ -1055,8 +1129,10 @@ namespace _1712862_1712867_1712884
             }
         }
 
+        bool _isMoveBeforeButtonClicked = false;
         private void MoveBefore_Click(object sender, RoutedEventArgs e)
         {
+            _isMoveBeforeButtonClicked = true;
             var tabSelected = ((TabItem)this.TabControl.SelectedItem).Header.ToString();
             if (tabSelected == "Rename Files")
             {
@@ -1083,8 +1159,10 @@ namespace _1712862_1712867_1712884
             }
         }
 
+        bool _isMoveAfterButtonClicked = false;
         private void MoveAfter_Click(object sender, RoutedEventArgs e)
         {
+            _isMoveAfterButtonClicked = true;
             var tabSelected = ((TabItem)this.TabControl.SelectedItem).Header.ToString();
             if (tabSelected == "Rename Files")
             {
@@ -1149,6 +1227,14 @@ namespace _1712862_1712867_1712884
             if (_isFullNameNormalizeButtonClicked)
             {
                 fileOut.WriteLine($"6");
+            }
+            if (_isMoveBeforeButtonClicked)
+            {
+                fileOut.WriteLine($"7");
+            }
+            if (_isMoveAfterButtonClicked)
+            {
+                fileOut.WriteLine($"8");
             }
             fileOut.Close();
         }
@@ -1225,6 +1311,16 @@ namespace _1712862_1712867_1712884
                 this.FullnameNormalizeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 return;
             }
+            if (Int32.Parse(newLine[0]) == 7)
+            {
+                this.MoveBefore.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
+            if (Int32.Parse(newLine[0]) == 8)
+            {
+                this.MoveAfter.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                return;
+            }
         }
         private string[] SplitLine(string line)
         {
@@ -1232,6 +1328,15 @@ namespace _1712862_1712867_1712884
             string[] tokens;
             tokens = line.Split(new string[] { spliter }, StringSplitOptions.RemoveEmptyEntries);
             return tokens;
+        }
+
+        private void helpComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (helpComboBox.SelectedIndex == 1)
+            {
+                MessageBox.Show("Version: 1.0", "About");
+                helpComboBox.SelectedIndex = 0;
+            }
         }
     }
 }

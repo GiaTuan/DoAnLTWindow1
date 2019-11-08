@@ -29,15 +29,14 @@
                     <TextBlock Text="Refresh" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 </StackPanel>
             </Button>
-            <ComboBox Grid.Column="1" Background="LightGray">
-                <ComboBoxItem Visibility="Collapsed" IsSelected="True">
+            <ComboBox Name="helpComboBox" Grid.Column="1" Background="LightGray" SelectionChanged="helpComboBox_SelectionChanged">
+                <ComboBoxItem Name="helpButton" Visibility="Collapsed" IsSelected="True">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/Question.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <TextBlock Text="Help" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,0,0"/>
                     </StackPanel>
                 </ComboBoxItem>
-                <ComboBoxItem>1</ComboBoxItem>
-                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem Name="aboutButton" Content="About" FontSize="20" Foreground="Red"/>
             </ComboBox>
             <Button Name="StartBatchButton" Grid.Column="2" Background="LightGray" Click="StartBatchButton_Click">
                 <StackPanel Orientation="Horizontal">
@@ -117,7 +116,6 @@
                             <CheckBox Name="LowerCaseCheckBox" Content="Lower Case" Checked="LowerCaseCheckBox_Checked" Unchecked="LowerCaseCheckBox_Unchecked"></CheckBox>
                             <CheckBox Name="UpperFirstLetterCheckBox" Content="Upper First Letter of Words" Checked="UpperFirstLetterCheckBox_Checked"  Unchecked="UpperFirstLetterCheckBox_Unchecked"></CheckBox>
                         </TreeViewItem>
-                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
                     </StackPanel>
                     <StackPanel  Name="Method2" Orientation="Horizontal"  Margin="0,0,0,5">
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
@@ -130,7 +128,6 @@
                                 <Button Content="Change" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Name="ReplaceButton" Click="ReplaceButton_Click"></Button>
                             </StackPanel>
                         </TreeViewItem>
-                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
                     </StackPanel>
                     <StackPanel Name="Method3" Orientation="Horizontal" Margin="0,0,0,5">
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
@@ -139,7 +136,6 @@
                                 <Button Name="UniqueNameButton" Content="Change" Width="80" Height="25" Margin="0,10,0,0" Click="UniqueNameButton_Click" Background="WhiteSmoke"></Button>
                             </StackPanel>
                         </TreeViewItem>
-                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
                     </StackPanel>
                     <StackPanel Name="Method4" Orientation="Horizontal" Margin="0,0,0,5">
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
@@ -148,7 +144,6 @@
                                 <Button Name="FullnameNormalizeButton" Content="Normalize" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="Nomalize_Click"></Button>
                             </StackPanel>
                         </TreeViewItem>
-                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
                     </StackPanel>
                     <StackPanel Name="Method5" Orientation="Horizontal" Margin="0,0,0,5">
                         <Image Source="/Images/Close.png" Height="30" Width="30" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
@@ -158,7 +153,6 @@
                                 <Button Name="MoveAfter" Content="ISBN After" Width="80" Height="25" Margin="0,10,0,0" Background="WhiteSmoke" Click="MoveAfter_Click"></Button>
                             </StackPanel>
                         </TreeViewItem>
-                        <Image Source="/Images/X.png" Height="30" Width="30" Margin="100,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right"></Image>
                     </StackPanel>
                 </TreeView>
             </StackPanel>
