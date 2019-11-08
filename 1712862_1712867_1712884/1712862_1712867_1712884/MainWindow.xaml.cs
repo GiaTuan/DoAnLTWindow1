@@ -536,19 +536,24 @@ namespace _1712862_1712867_1712884
         string oldString = null;
         string newString = null;
 
-
+        bool Flag = false; //Cờ
+        //bool Flap2 = false; //Cờ 2
         private void getEveryThingReady(bool isFile)
         {
-            if (isFile) // && filePreview == null
+            if (Flag == true)
             {
-                this.filePreview = toolDAO.cloneToPreview(this.fileData);
-                NewFileNameList.ItemsSource = filePreview;
-            }
-            else if (!isFile)   // && folderPreview == null
-            {
-                this.folderPreview = toolDAO.cloneToPreview(this.folderData);
-                NewFolderNameList.ItemsSource = folderPreview;
+                if (isFile) //  && filePreview == null
+                {
+                    this.filePreview = toolDAO.cloneToPreview(this.fileData);
+                    NewFileNameList.ItemsSource = filePreview;
+                }
+                else if (!isFile)   //  && folderPreview == null
+                {
+                    this.folderPreview = toolDAO.cloneToPreview(this.folderData);
+                    NewFolderNameList.ItemsSource = folderPreview;
 
+                }
+                Flag = false;
             }
 
         }
@@ -559,11 +564,15 @@ namespace _1712862_1712867_1712884
 
         private void addFile_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Flag = true;
             if (addFile.SelectedItem.ToString().Contains("Simple Element") == true)
             {
                 if (fileData != null)
                 {
-                    filePreview.Clear();
+                    if (filePreview != null)
+                    {
+                        filePreview.Clear();
+                    }
                     fileData.Clear();
                 }
                 fileData = toolDAO.bindingSingleData(true);
@@ -574,7 +583,10 @@ namespace _1712862_1712867_1712884
             {
                 if (fileData != null)
                 {
-                    filePreview.Clear();
+                    if(filePreview!=null)
+                    {
+                        filePreview.Clear();
+                    }
                     fileData.Clear();
                 }
                 fileData = toolDAO.bindingAllData(true);
@@ -587,11 +599,15 @@ namespace _1712862_1712867_1712884
 
         private void addFolder_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Flag = true;
             if (addFolder.SelectedItem.ToString().Contains("Simple Element") == true)
             {
                 if (folderData != null)
                 {
-                    folderPreview.Clear();
+                    if (folderPreview != null)
+                    {
+                        folderPreview.Clear();
+                    }
                     folderData.Clear();
                 }
                 folderData = toolDAO.bindingSingleData(false);
@@ -602,7 +618,10 @@ namespace _1712862_1712867_1712884
             {
                 if (folderData != null)
                 {
-                    folderPreview.Clear();
+                    if(folderPreview!=null)
+                    {
+                        folderPreview.Clear();
+                    }
                     folderData.Clear();
                 }
                 folderData = toolDAO.bindingAllData(false);
@@ -1272,6 +1291,21 @@ namespace _1712862_1712867_1712884
                 PresetComboBox.SelectedIndex = -1;
                 return;
             }
+
+            var tabSelected = ((TabItem)(this.TabControl.SelectedItem)).Header.ToString();
+
+            if (tabSelected == "Rename Files")
+            {
+                this.filePreview = toolDAO.cloneToPreview(this.fileData);
+                NewFileNameList.ItemsSource = filePreview;
+            }
+            else
+            {
+                this.folderPreview = toolDAO.cloneToPreview(this.folderData);
+                NewFolderNameList.ItemsSource = folderPreview;
+            }
+
+
             var presetName = this.PresetComboBox.SelectedItem.ToString();
             //Mo File
             try
