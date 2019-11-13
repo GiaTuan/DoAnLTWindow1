@@ -2,4 +2,7 @@
 1712872 - La Mạnh Tuấn
 1712884 - Nguyễn Thanh Tùng
 
-Link youtube: https://www.youtube.com/watch?v=qsCp3BjTTu8
+*Thư mục "File And Folder Examples" trong thư mục bin/Debug là những mẫu File và Folder để kiểm tra chương trình.
+
+Link youtube: https://www.youtube.com/watch?v=DNBfaxlrYOc
+Link Github: https://github.com/GiaTuan/DoAnLTWindow1.git
